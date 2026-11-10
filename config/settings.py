@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.catalogo',
     'apps.usuarios',
     'apps.cotizador',
+    'apps.core',
 ]
 
 MIDDLEWARE = [
@@ -118,6 +119,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_URL = 'usuarios:login'
+LOGIN_REDIRECT_URL = 'catalogo:lista'
+LOGOUT_REDIRECT_URL = 'core:inicio'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
@@ -126,4 +133,10 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
 }
