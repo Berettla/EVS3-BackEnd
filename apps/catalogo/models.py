@@ -52,10 +52,10 @@ class Producto(models.Model):
             base_slug = slugify(self.nombre)
             slug = base_slug
             contador = 1
-        while Producto.objects.filter(slug=slug).exclude(pk=self.pk).exists():
-            slug = f"{base_slug}-{contador}"
-            contador += 1
-        self.slug = slug
+            while Producto.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{contador}"
+                contador += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def __str__(self):
