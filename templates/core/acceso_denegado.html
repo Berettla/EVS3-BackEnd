@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Acceso denegado - Banqueteria Judani{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card p-5 text-center">
+            <h1 style="font-family: 'Dancing Script', cursive; color: #D9467A; font-size: 3rem;">Acceso denegado</h1>
+            <p class="mb-4">No tienes permisos para entrar a esta sección. Está reservada para el personal de Banqueteria Judani.</p>
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="{% url 'catalogo:lista' %}" class="btn btn-primary">Ir al catálogo</a>
+                <a href="{% url 'core:inicio' %}" class="btn btn-outline-primary">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
