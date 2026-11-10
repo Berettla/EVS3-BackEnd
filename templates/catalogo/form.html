@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block titulo %}{{ titulo }} - Banqueteria Judani{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card p-4">
+            <h2 style="font-family: 'Dancing Script', cursive; color: #D9467A; font-size: 2.4rem;">{{ titulo }}</h2>
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="row g-3">
+                    {% for field in form %}
+                        <div class="{% if field.name == 'descripcion' or field.name == 'imagen' or field.name == 'activo' %}col-12{% elif field.name == 'precio_unitario' or field.name == 'pedido_minimo' or field.name == 'cantidad_maxima' %}col-md-4{% else %}col-md-6{% endif %}">
+                            {% if field.name == 'activo' %}
+                                <div class="form-check form-switch">
+                                    {{ field }}
+                                    <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                </div>
+                            {% else %}
+                                <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                                {{ field }}
+                            {% endif %}
+                            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Guardar</button>
+                    <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

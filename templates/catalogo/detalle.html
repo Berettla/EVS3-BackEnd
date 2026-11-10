@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block titulo %}{{ producto.nombre }} - Banqueteria Judani{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catalogo:lista' %}">Catálogo</a></li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'catalogo:lista' %}?categoria={{ producto.categoria.id }}">{{ producto.categoria.nombre }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ producto.nombre }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+                 class="w-100 rounded-4 object-fit-cover shadow-sm" style="max-height: 460px;">
+        {% else %}
+            <div class="d-flex align-items-center justify-content-center rounded-4"
+                 style="height: 360px; background: #FBE3EA; color: #D9467A; font-family: 'Dancing Script', cursive; font-size: 2.4rem;">
+                Banqueteria Judani
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6">
+        <div class="mb-2">
+            <span class="badge rounded-pill text-bg-light border">{{ producto.categoria.nombre }}</span>
+            <span class="badge text-bg-{% if producto.estado == 'DISP' %}success{% elif producto.estado == 'AGOT' %}secondary{% elif producto.estado == 'PEDI' %}warning{% else %}info{% endif %}">
+                {{ producto.get_estado_display }}
+            </span>
+        </div>
+
+        <h1 class="mb-1">{{ producto.nombre }}</h1>
+        <p class="text-muted small">Código: {{ producto.codigo }}</p>
+
+        <p class="fs-3 fw-bold" style="color: #D9467A;">
+            ${{ producto.precio_unitario|floatformat:"0g" }}
+            <small class="text-muted fs-6 fw-normal">por unidad</small>
+        </p>
+
+        {% if producto.descripcion %}
+            <div class="mb-3">{{ producto.descripcion|linebreaks }}</div>
+        {% endif %}
+
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item d-flex justify-content-between bg-transparent">
+                <span>Pedido mínimo</span>
+                <strong>{{ producto.pedido_minimo }} unidades</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between bg-transparent">
+                <span>Máximo por cotización</span>
+                <strong>{{ producto.cantidad_maxima }} unidades</strong>
+            </li>
+        </ul>
+
+        <a href="{% url 'catalogo:lista' %}?{{ request.GET.urlencode }}" class="btn btn-outline-primary">Volver al catálogo</a>
+    </div>
+</div>
+{% endblock %}

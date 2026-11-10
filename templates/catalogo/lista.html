@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Catálogo - Banqueteria Judani{% endblock %}
+
+{% block contenido %}
+<h1 style="font-family: 'Dancing Script', cursive; color: #D9467A; font-size: 2.8rem;">Nuestro catálogo</h1>
+<p class="text-muted mb-4">Todo lo que preparamos para tus celebraciones.</p>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input type="text" name="q" value="{{ q }}" class="form-control"
+               placeholder="Buscar por nombre, código o descripción">
+    </div>
+    <div class="col-md-3">
+        <select name="categoria" class="form-select">
+            <option value="">Todas las categorías</option>
+            {% for c in categorias %}
+                <option value="{{ c.id }}" {% if categoria_id == c.id|stringformat:"s" %}selected{% endif %}>{{ c.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="orden" class="form-select">
+            <option value="nombre" {% if orden == 'nombre' %}selected{% endif %}>Nombre</option>
+            <option value="precio_asc" {% if orden == 'precio_asc' %}selected{% endif %}>Precio: menor a mayor</option>
+            <option value="precio_desc" {% if orden == 'precio_desc' %}selected{% endif %}>Precio: mayor a menor</option>
+            <option value="recientes" {% if orden == 'recientes' %}selected{% endif %}>Más recientes</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+</form>
+
+{% if pagina %}
+    <p class="small text-muted">{{ pagina.paginator.count }} producto(s) encontrado(s)</p>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+        {% for producto in pagina %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" class="card-img-top object-fit-cover"
+                             style="height: 220px;" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center"
+                             style="height: 220px; background: #FBE3EA; color: #D9467A; font-family: 'Dancing Script', cursive; font-size: 1.8rem;">
+                            Banqueteria Judani
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge rounded-pill text-bg-light border">{{ producto.categoria.nombre }}</span>
+                            <span class="badge text-bg-{% if producto.estado == 'DISP' %}success{% elif producto.estado == 'AGOT' %}secondary{% elif producto.estado == 'PEDI' %}warning{% else %}info{% endif %}">
+                                {{ producto.get_estado_display }}
+                            </span>
+                        </div>
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                        <p class="card-text text-muted small">{{ producto.descripcion|truncatechars:80 }}</p>
+                        <div class="mt-auto">
+                            <p class="fs-5 fw-bold mb-1" style="color: #D9467A;">
+                                ${{ producto.precio_unitario|floatformat:"0g" }}
+                                <small class="text-muted fs-6 fw-normal">c/u</small>
+                            </p>
+                            <p class="small text-muted mb-2">Pedido mínimo: {{ producto.pedido_minimo }} unidades</p>
+                            <a href="{% url 'catalogo:detalle' producto.slug %}?{{ request.GET.urlencode }}" class="btn btn-outline-primary w-100">Ver detalle</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if pagina.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if pagina.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ pagina.previous_page_number }}&q={{ q|urlencode }}&categoria={{ categoria_id }}&orden={{ orden }}">Anterior</a>
+                    </li>
+                {% endif %}
+                {% for n in pagina.paginator.page_range %}
+                    <li class="page-item {% if n == pagina.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ n }}&q={{ q|urlencode }}&categoria={{ categoria_id }}&orden={{ orden }}">{{ n }}</a>
+                    </li>
+                {% endfor %}
+                {% if pagina.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ pagina.next_page_number }}&q={{ q|urlencode }}&categoria={{ categoria_id }}&orden={{ orden }}">Siguiente</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-warning">No encontramos productos con esos criterios. Prueba con otra búsqueda.</div>
+{% endif %}
+{% endblock %}
