@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from apps.catalogo.models import CategoriaProducto, Producto
-
+from apps.usuarios.models import Perfil
 
 class Command(BaseCommand):
     help = "Pobla la base de datos con categorías, productos y usuarios de prueba."
@@ -15,6 +15,14 @@ class Command(BaseCommand):
         if not User.objects.filter(username="cliente").exists():
             User.objects.create_user("cliente", "cliente@banqueteria.cl", "cliente12345")
             self.stdout.write(self.style.SUCCESS("✓ Usuario 'cliente' creado."))
+
+        for username, rut, rol in [("admin", "11.111.111-1", "ADM"), ("cliente", "22.222.222-2", "CLI")]:
+            usuario = User.objects.get(username=username)
+            Perfil.objects.get_or_create(
+                usuario=usuario,
+                defaults={"rut": rut, "telefono": "+56911111111", "rol": rol},
+            )
+        self.stdout.write(self.style.SUCCESS("✓ Perfiles creados."))
 
         # Categorías
         categorias = {
