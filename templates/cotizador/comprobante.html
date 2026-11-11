@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Comprobante {{ comprobante.folio }} - Banqueteria Judani{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card p-4">
+            <div class="text-center mb-3">
+                <h1 style="font-family: 'Dancing Script', cursive; color: #D9467A; font-size: 2.8rem;" class="mb-0">¡Solicitud recibida!</h1>
+                <p class="text-muted mb-0">Gracias por cotizar con Banqueteria Judani.</p>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="small text-muted">Folio</div>
+                    <div class="fw-bold">{{ comprobante.folio }}</div>
+                    <div class="small text-muted mt-2">Fecha</div>
+                    <div>{{ comprobante.fecha|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="small text-muted">Cliente</div>
+                    <div class="fw-bold">{{ user.get_full_name|default:user.username }}</div>
+                    <div>{{ user.email }}</div>
+                    {% if user.perfil %}
+                        <div>RUT: {{ user.perfil.rut }}</div>
+                        {% if user.perfil.telefono %}<div>Tel: {{ user.perfil.telefono }}</div>{% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-end">Cantidad</th>
+                            <th class="text-end">Precio</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in lineas %}
+                            <tr>
+                                <td>{{ l.producto.nombre }} <span class="small text-muted">({{ l.producto.codigo }})</span></td>
+                                <td class="text-end">{{ l.cantidad }}</td>
+                                <td class="text-end">${{ l.producto.precio_unitario|floatformat:"0g" }}</td>
+                                <td class="text-end">${{ l.subtotal|floatformat:"0g" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ms-auto" style="max-width: 320px; width: 100%;">
+                <div class="d-flex justify-content-between mb-1"><span>Subtotal</span><span>${{ totales.subtotal|floatformat:"0g" }}</span></div>
+                <div class="d-flex justify-content-between mb-1"><span>IVA (19%)</span><span>${{ totales.iva|floatformat:"0g" }}</span></div>
+                <div class="d-flex justify-content-between fs-5 fw-bold" style="color: #D9467A;"><span>Total</span><span>${{ totales.total|floatformat:"0g" }}</span></div>
+            </div>
+
+            <p class="small text-muted mt-4 mb-3">Comprobante simulado con fines académicos. No constituye documento tributario.</p>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-outline-primary" onclick="window.print()">Imprimir</button>
+                <a href="{% url 'catalogo:lista' %}" class="btn btn-primary">Volver al catálogo</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

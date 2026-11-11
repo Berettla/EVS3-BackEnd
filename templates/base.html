@@ -86,10 +86,7 @@
 
                     <ul class="navbar-nav align-items-lg-center gap-lg-2">
                         <li class="nav-item">
-                            <a class="btn btn-primary btn-sm" href="#">
-                                Mi cotización
-                                <span class="badge bg-light text-primary ms-1">{{ cotizacion_items|default:0 }}</span>
-                            </a>
+                            <a class="btn btn-primary btn-sm" href="{% url 'cotizador:ver' %}">Mi cotización<span class="badge bg-light text-primary ms-1">{{ cotizacion_items|default:0 }}</span></a>
                         </li>
                         {% if user.is_authenticated %}
                             <li class="nav-item dropdown">

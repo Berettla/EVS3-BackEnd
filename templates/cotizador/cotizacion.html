@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Mi cotización - Banqueteria Judani{% endblock %}
+
+{% block contenido %}
+<h1 style="font-family: 'Dancing Script', cursive; color: #D9467A; font-size: 2.8rem;" class="mb-0">Mi cotización</h1>
+<p class="text-muted mb-4">Arma el pedido para tu evento y revisa el total estimado.</p>
+
+{% if lineas %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-end">Precio</th>
+                            <th style="width: 210px;">Cantidad</th>
+                            <th class="text-end">Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in lineas %}
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">{{ l.producto.nombre }}</div>
+                                    <div class="small text-muted">
+                                        {{ l.producto.codigo }} · mín. {{ l.producto.pedido_minimo }} · máx. {{ l.producto.cantidad_maxima }}
+                                    </div>
+                                </td>
+                                <td class="text-end">${{ l.producto.precio_unitario|floatformat:"0g" }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'cotizador:actualizar' l.producto.id %}" class="d-flex gap-1">
+                                        {% csrf_token %}
+                                        <input type="number" name="cantidad" value="{{ l.cantidad }}"
+                                               min="{{ l.producto.pedido_minimo }}" max="{{ l.producto.cantidad_maxima }}"
+                                               class="form-control form-control-sm">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Actualizar</button>
+                                    </form>
+                                </td>
+                                <td class="text-end fw-semibold">${{ l.subtotal|floatformat:"0g" }}</td>
+                                <td class="text-end">
+                                    <form method="post" action="{% url 'cotizador:quitar' l.producto.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Quitar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-primary mt-3">Seguir agregando productos</a>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card p-4">
+            <h5 class="mb-3">Resumen</h5>
+            <div class="d-flex justify-content-between mb-2">
+                <span>Subtotal</span><span>${{ totales.subtotal|floatformat:"0g" }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span>IVA (19%)</span><span>${{ totales.iva|floatformat:"0g" }}</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between fs-5 fw-bold mb-3" style="color: #D9467A;">
+                <span>Total</span><span>${{ totales.total|floatformat:"0g" }}</span>
+            </div>
+
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'cotizador:confirmar' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary w-100">Solicitar cotización</button>
+                </form>
+            {% else %}
+                <a href="{% url 'usuarios:login' %}?next={% url 'cotizador:ver' %}" class="btn btn-primary w-100">
+                    Inicia sesión para solicitarla
+                </a>
+            {% endif %}
+
+            <form method="post" action="{% url 'cotizador:vaciar' %}" class="mt-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-secondary w-100">Vaciar cotización</button>
+            </form>
+            <p class="small text-muted mt-3 mb-0">Los precios son netos; el IVA se calcula sobre el subtotal.</p>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card p-5 text-center">
+    <p class="fs-5 mb-3">Tu cotización está vacía.</p>
+    <div><a href="{% url 'catalogo:lista' %}" class="btn btn-primary">Ver el catálogo</a></div>
+</div>
+{% endif %}
+{% endblock %}
