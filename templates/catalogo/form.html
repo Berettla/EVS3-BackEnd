@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block titulo %}{{ titulo }} - Banqueteria Judani{% endblock %}
+{% block titulo %}{{ titulo }} - Banquetería Judani{% endblock %}
 
 {% block contenido %}
 <div class="row justify-content-center">
@@ -17,8 +17,8 @@
 
                 <div class="row g-3">
                     {% for field in form %}
-                        <div class="{% if field.name == 'descripcion' or field.name == 'imagen' or field.name == 'activo' %}col-12{% elif field.name == 'precio_unitario' or field.name == 'pedido_minimo' or field.name == 'cantidad_maxima' %}col-md-4{% else %}col-md-6{% endif %}">
-                            {% if field.name == 'activo' %}
+                        <div class="{% if field.name == 'descripcion' or field.name == 'imagen' %}col-12{% elif field.name == 'precio_unitario' or field.name == 'pedido_minimo' or field.name == 'cantidad_maxima' %}col-md-4{% else %}col-md-6{% endif %}">
+                            {% if field.name == 'activo' or field.name == 'destacado' %}
                                 <div class="form-check form-switch">
                                     {{ field }}
                                     <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>

@@ -12,7 +12,11 @@ class RegistroForm(UserCreationForm):
     last_name = forms.CharField(max_length=50, label='Apellidos')
     email = forms.EmailField(label='Correo electrónico')
     rut = forms.CharField(max_length=12, label='RUT', help_text='Formato: 12.345.678-5')
-    telefono = forms.CharField(max_length=15, required=False, label='Teléfono')
+    telefono = forms.CharField(
+        max_length=20, required=False, label='Teléfono celular',
+        help_text='Escríbelo sin el +56. Si lo incluyes, también lo aceptamos.',
+        widget=forms.TextInput(attrs={'placeholder': '9 1234 5678'}),
+    )
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -39,6 +43,17 @@ class RegistroForm(UserCreationForm):
         if Perfil.objects.filter(rut=rut).exists():
             raise forms.ValidationError('Ya existe un usuario registrado con este RUT.')
         return rut
+    
+    def clean_telefono(self):
+        telefono = re.sub(r'[\s\-\(\)]', '', self.cleaned_data['telefono'])
+        if not telefono:
+            return ''
+        telefono = telefono.removeprefix('+')
+        if telefono.startswith('56'):
+            telefono = telefono[2:]
+        if not re.fullmatch(r'9\d{8}', telefono):
+            raise forms.ValidationError('Ingresa un celular chileno válido, ej: 9 1234 5678.')
+        return f'+56{telefono}'
 
     def save(self, commit=True):
         user = super().save(commit=False)

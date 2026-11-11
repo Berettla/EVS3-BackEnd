@@ -42,7 +42,7 @@
                     <tbody>
                         {% for l in lineas %}
                             <tr>
-                                <td>{{ l.producto.nombre }} <span class="small text-muted">({{ l.producto.codigo }})</span></td>
+                                <td>{{ l.producto.nombre }}</td>
                                 <td class="text-end">{{ l.cantidad }}</td>
                                 <td class="text-end">${{ l.producto.precio_unitario|floatformat:"0g" }}</td>
                                 <td class="text-end">${{ l.subtotal|floatformat:"0g" }}</td>
@@ -60,7 +60,7 @@
 
             <p class="small text-muted mt-4 mb-3">Comprobante simulado con fines académicos. No constituye documento tributario.</p>
 
-            <div class="d-flex gap-2 flex-wrap">
+            <div class="d-flex gap-2 flex-wrap no-imprimir">
                 <button type="button" class="btn btn-outline-primary" onclick="window.print()">Imprimir</button>
                 <a href="{% url 'catalogo:lista' %}" class="btn btn-primary">Volver al catálogo</a>
             </div>

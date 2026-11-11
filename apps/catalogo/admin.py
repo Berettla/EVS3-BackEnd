@@ -16,10 +16,10 @@ class CategoriaProductoAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'categoria', 'precio_unitario', 'estado', 'activo')
-    list_filter = ('categoria', 'estado', 'activo')
+    list_display = ('codigo', 'nombre', 'categoria', 'precio_unitario', 'estado', 'activo', 'destacado')
+    list_filter = ('categoria', 'estado', 'activo', 'destacado')
     search_fields = ('codigo', 'nombre', 'descripcion')
-    list_editable = ('precio_unitario', 'estado', 'activo')
+    list_editable = ('precio_unitario', 'estado', 'activo', 'destacado')
     readonly_fields = ('creado',)
     fieldsets = (
         ('Identificación', {
@@ -32,6 +32,6 @@ class ProductoAdmin(admin.ModelAdmin):
             'fields': ('precio_unitario', 'pedido_minimo', 'cantidad_maxima'),
         }),
         ('Estado y vigencia', {
-            'fields': ('estado', 'activo', 'creado'),
+            'fields': ('estado', 'activo', 'destacado', 'creado'),
         }),
     )

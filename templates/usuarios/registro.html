@@ -3,41 +3,54 @@
 {% block titulo %}Crear cuenta - Banquetería Judani{% endblock %}
 
 {% block contenido %}
-<div class="row justify-content-center my-md-4">
-    <div class="col-lg-11 col-xl-10">
-        <div class="auth-card">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <div class="auth-lado">
-                        <div class="marca-grande">Banquetería Judani</div>
-                        <p class="frase">Crea tu cuenta y cotiza tu próximo evento en minutos.</p>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="auth-form">
-                        <h2>Crea tu cuenta</h2>
-                        <p class="subtitulo">Completa tus datos para empezar.</p>
-
-                        <form method="post" novalidate>
-                            {% csrf_token %}
-                            <div class="row g-3">
-                                {% for field in form %}
-                                    <div class="{% if field.name == 'username' or field.name == 'email' %}col-12{% else %}col-md-6{% endif %}">
-                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                                        {{ field }}
-                                        {% if field.help_text %}<div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
-                                        {% for error in field.errors %}
-                                            <div class="text-danger small">{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
+<div class="auth-wrap">
+    <div class="row justify-content-center w-100 mx-0">
+        <div class="col-xl-11 col-xxl-10">
+            <div class="auth-card">
+                <div class="row g-0 h-100">
+                    <div class="col-lg-4">
+                        <div class="auth-lado">
+                            <div class="marca-grande">Banquetería Judani</div>
+                            <p class="frase">Crea tu cuenta y solicita tu próxima cotización en minutos.</p>
+                            <div class="mt-3 text-start mx-auto" style="max-width: 260px; color: #6B3A4D;">
+                                <div class="mb-2"><i class="bi bi-card-checklist me-2" style="color: #D9467A;"></i>Arma tu cotización</div>
+                                <div><i class="bi bi-receipt me-2" style="color: #D9467A;"></i>Recibe tu comprobante</div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 py-2 mt-4">Crear mi cuenta</button>
-                        </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="auth-form d-flex flex-column justify-content-center h-100">
+                            <h2>Crea tu cuenta</h2>
+                            <p class="subtitulo">Completa tus datos para empezar.</p>
 
-                        <p class="mt-4 mb-0 text-center">
-                            ¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}" class="fw-bold">Ingresa</a>
-                        </p>
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                                <div class="row g-3">
+                                    {% for field in form %}
+                                        <div class="{% if field.name == 'username' or field.name == 'email' %}col-12{% else %}col-md-6{% endif %}">
+                                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                            {% if field.name == 'telefono' %}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">+56</span>
+                                                    {{ field }}
+                                                </div>
+                                            {% else %}
+                                                {{ field }}
+                                            {% endif %}
+                                            {% if field.help_text %}<div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
+                                            {% for error in field.errors %}
+                                                <div class="text-danger small">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">Crear mi cuenta</button>
+                            </form>
+
+                            <p class="mt-4 mb-0 text-center">
+                                ¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}" class="fw-bold">Ingresa</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

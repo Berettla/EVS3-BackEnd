@@ -7,7 +7,7 @@
 <p class="text-muted mb-4">Todo lo que preparamos para tus celebraciones.</p>
 
 <form method="get" class="row g-2 mb-4">
-    <div class="col-md-5">
+    <div class="col-md-4">
         <input type="text" name="q" value="{{ q }}" class="form-control"
                placeholder="Buscar por nombre, código o descripción">
     </div>
@@ -27,8 +27,11 @@
             <option value="recientes" {% if orden == 'recientes' %}selected{% endif %}>Más recientes</option>
         </select>
     </div>
-    <div class="col-md-2 d-grid">
-        <button type="submit" class="btn btn-primary">Buscar</button>
+    <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-grow-1">Buscar</button>
+        {% if q or categoria_id or orden != 'nombre' %}
+            <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-secondary flex-grow-1">Limpiar</a>
+        {% endif %}
     </div>
 </form>
 
@@ -92,6 +95,6 @@
         </nav>
     {% endif %}
 {% else %}
-    <div class="alert alert-warning">No encontramos productos con esos criterios. Prueba con otra búsqueda.</div>
+    <div class="alert alert-warning">No encontramos productos con esos criterios. <a href="{% url 'catalogo:lista' %}" class="alert-link">Limpiar filtros</a> o prueba con otra búsqueda.</div>
 {% endif %}
 {% endblock %}

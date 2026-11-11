@@ -42,6 +42,7 @@ class Producto(models.Model):
     estado = models.CharField(max_length=4, choices=Estado.choices, default=Estado.DISPONIBLE)
     imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
     activo = models.BooleanField(default=True)
+    destacado = models.BooleanField(default=False)
     creado = models.DateTimeField(auto_now_add=True)
 
     class Meta:

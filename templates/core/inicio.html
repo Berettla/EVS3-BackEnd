@@ -1,6 +1,141 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Inicio - Banquetería Judani{% endblock %}
 
 {% block contenido %}
-    <h1>Bienvenido a Sabores &amp; Eventos</h1>
-    <p>Banquetería para todo tipo de eventos.</p>
+<style>
+    .titulo-script { font-family: 'Dancing Script', cursive; color: #D9467A; }
+    .portada-slide { min-height: 440px; padding: 2rem 1rem 3.5rem; display: flex; align-items: center; }
+    @media (min-width: 768px) { .portada-slide { padding: 2rem 5rem 3.5rem; } }
+    #portada .carousel-control-prev,
+    #portada .carousel-control-next { width: 4rem; }
+    #portada .carousel-control-prev-icon,
+    #portada .carousel-control-next-icon { filter: invert(1); }
+    #portada .carousel-indicators [data-bs-target] { background-color: #D9467A; }
+    .separador { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; color: #D9467A; }
+    .separador::before, .separador::after { content: ''; flex: 1; height: 2px; }
+    .separador::before { background: linear-gradient(to right, transparent, #F4B6C8); }
+    .separador::after { background: linear-gradient(to left, transparent, #F4B6C8); }
+</style>
+
+<!-- Carrusel -->
+<div id="portada" class="carousel slide carousel-fade mb-5" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#portada" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Diapositiva 1"></button>
+        <button type="button" data-bs-target="#portada" data-bs-slide-to="1" aria-label="Diapositiva 2"></button>
+        <button type="button" data-bs-target="#portada" data-bs-slide-to="2" aria-label="Diapositiva 3"></button>
+    </div>
+    <div class="carousel-inner rounded-4 shadow">
+        <div class="carousel-item active">
+            <div class="portada-slide" style="background: url('{% static 'img/portada-1.jpg' %}') center/cover no-repeat, linear-gradient(135deg, #F4B6C8 0%, #FBE3EA 60%, #FFF3E0 100%);">
+                <div class="bg-white bg-opacity-75 rounded-4 p-4 p-md-5" style="max-width: 520px;">
+                    <h1 class="titulo-script display-5">Sabores caseros para tus celebraciones</h1>
+                    <p class="mb-4">Empanadas, canapés, platos de fondo y postres preparados con cariño para tu evento.</p>
+                    <a href="{% url 'catalogo:lista' %}" class="btn btn-primary btn-lg">Ver catálogo</a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="portada-slide" style="background: url('{% static 'img/portada-2.jpg' %}') center/cover no-repeat, linear-gradient(135deg, #FBE3EA 0%, #F4B6C8 60%, #E8789C 100%);">
+                <div class="bg-white bg-opacity-75 rounded-4 p-4 p-md-5" style="max-width: 520px;">
+                    <h2 class="titulo-script display-5">Cotiza tu evento en minutos</h2>
+                    <p class="mb-4">Elige tus productos, indica las cantidades y obtén el total estimado con IVA.</p>
+                    <a href="{% url 'cotizador:ver' %}" class="btn btn-primary btn-lg">Armar mi cotización</a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="portada-slide" style="background: url('{% static 'img/portada-3.jpg' %}') center/cover no-repeat, linear-gradient(135deg, #FFF3E0 0%, #FBE3EA 60%, #F4B6C8 100%);">
+                <div class="bg-white bg-opacity-75 rounded-4 p-4 p-md-5" style="max-width: 520px;">
+                    <h2 class="titulo-script display-5">Para cada ocasión</h2>
+                    <p class="mb-4">Cumpleaños, matrimonios, cócteles, baby showers y reuniones familiares.</p>
+                    <a href="{% url 'catalogo:lista' %}" class="btn btn-primary btn-lg">Explorar productos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev d-none d-md-flex" type="button" data-bs-target="#portada" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next d-none d-md-flex" type="button" data-bs-target="#portada" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+    </button>
+</div>
+
+<!-- Productos destacados -->
+{% if destacados %}
+<div class="separador"><i class="bi bi-flower1 fs-4"></i></div>
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+        <h2 class="titulo-script display-6 mb-0">Nuestros destacados</h2>
+        <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-primary btn-sm">Ver todo el catálogo</a>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+        {% for producto in destacados %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" class="card-img-top object-fit-cover"
+                             style="height: 190px;" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center"
+                             style="height: 190px; background: #FBE3EA; color: #D9467A; font-family: 'Dancing Script', cursive; font-size: 1.6rem;">
+                            Banquetería Judani
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge text-bg-light border align-self-start mb-2">{{ producto.categoria.nombre }}</span>
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                        <p class="fs-5 fw-bold mb-3" style="color: #D9467A;">
+                            ${{ producto.precio_unitario|floatformat:"0g" }}
+                            <small class="text-muted fs-6 fw-normal">c/u</small>
+                        </p>
+                        <a href="{% url 'catalogo:detalle' producto.slug %}" class="btn btn-outline-primary mt-auto">Ver detalle</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Cómo funciona -->
+<div class="separador"><i class="bi bi-flower1 fs-4"></i></div>
+<section class="mb-5">
+    <h2 class="titulo-script display-6 text-center mb-4">¿Cómo funciona?</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <i class="bi bi-search fs-1" style="color: #D9467A;"></i>
+                <h5 class="mt-3">1. Explora el catálogo</h5>
+                <p class="text-muted mb-0">Busca por nombre o categoría y revisa precios, mínimos y disponibilidad.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <i class="bi bi-card-checklist fs-1" style="color: #D9467A;"></i>
+                <h5 class="mt-3">2. Arma tu cotización</h5>
+                <p class="text-muted mb-0">Agrega los productos con sus cantidades y mira el total con IVA al instante.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <i class="bi bi-send-check fs-1" style="color: #D9467A;"></i>
+                <h5 class="mt-3">3. Solicítala</h5>
+                <p class="text-muted mb-0">Inicia sesión, confirma tu cotización y recibe tu comprobante.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Llamado final -->
+<div class="separador"><i class="bi bi-flower1 fs-4"></i></div>
+<section class="rounded-4 p-5 text-center" style="background: linear-gradient(160deg, #F4B6C8 0%, #FBE3EA 100%);">
+    <h2 class="titulo-script display-6">¿Listo para tu próximo evento?</h2>
+    <p class="mb-4">Arma tu cotización en minutos y revisa el total antes de decidir.</p>
+    <a href="{% url 'cotizador:ver' %}" class="btn btn-primary btn-lg">Armar mi cotización</a>
+</section>
 {% endblock %}

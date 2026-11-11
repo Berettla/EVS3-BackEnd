@@ -44,7 +44,7 @@ class Command(BaseCommand):
             ("EMP-001", "Empanada de pino", cat_map["Empanadas"], 1800, 12, 500, "DISP", "Clásica empanada de pino horneada."),
             ("EMP-002", "Empanada de queso", cat_map["Empanadas"], 1600, 12, 500, "DISP", "Empanada frita rellena de queso."),
             ("CAN-001", "Canapé de salmón", cat_map["Canapés"], 1500, 20, 300, "DISP", "Pan crocante con queso crema y salmón."),
-            ("CAN-002", "Canapé de jamón y queso", cat_map["Canapés"], 900, 20, 400, "DISP", "Bocadillo clásico de jamón y queso."),
+            ("CAN-002", "Canapé de jamón y queso", cat_map["Canapés"], 900, 20, 400, "DISP", "Canapé clásico de jamón y queso."),
             ("PLA-001", "Pollo al jugo con arroz", cat_map["Platos de fondo"], 6500, 10, 200, "PEDI", "Porción individual con acompañamiento."),
             ("PLA-002", "Lomo saltado", cat_map["Platos de fondo"], 8000, 10, 150, "PEDI", "Lomo salteado con papas fritas y arroz."),
             ("POS-001", "Tartaleta de frutilla", cat_map["Postres"], 1200, 12, 300, "DISP", "Tartaleta con crema pastelera y frutilla."),
@@ -67,4 +67,9 @@ class Command(BaseCommand):
                 },
             )
 
+        # Productos destacados del inicio
+        Producto.objects.filter(
+            codigo__in=['EMP-001', 'CAN-001', 'PLA-002', 'POS-001']
+        ).update(destacado=True)
+        self.stdout.write(self.style.SUCCESS("✓ Productos destacados marcados."))
         self.stdout.write(self.style.SUCCESS("✓ Catálogo poblado exitosamente."))

@@ -8,7 +8,7 @@ class ProductoForm(forms.ModelForm):
         model = Producto
         fields = [
             'codigo', 'nombre', 'categoria', 'estado', 'descripcion',
-            'precio_unitario', 'pedido_minimo', 'cantidad_maxima', 'imagen', 'activo',
+            'precio_unitario', 'pedido_minimo', 'cantidad_maxima', 'imagen', 'activo','destacado',
         ]
         labels = {
             'codigo': 'Código',
@@ -19,6 +19,7 @@ class ProductoForm(forms.ModelForm):
             'cantidad_maxima': 'Cantidad máxima por cotización',
             'imagen': 'Imagen',
             'activo': 'Visible en el catálogo',
+            'destacado': 'Mostrar como destacado en el inicio',
         }
         widgets = {
             'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: EMP-003'}),
@@ -31,6 +32,7 @@ class ProductoForm(forms.ModelForm):
             'estado': forms.Select(attrs={'class': 'form-select'}),
             'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'destacado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def clean_codigo(self):
