@@ -19,6 +19,8 @@ def es_personal(user):
     return user.is_staff
 
 
+# ---------- Catálogo público (Read) ----------
+
 def lista_productos(request):
     productos = Producto.objects.filter(activo=True).select_related('categoria')
 
@@ -58,6 +60,15 @@ def detalle_producto(request, slug):
     return render(request, 'catalogo/detalle.html', {'producto': producto})
 
 
+# ---------- Backoffice (solo personal) ----------
+
+@login_required
+@user_passes_test(es_personal, login_url='core:acceso_denegado')
+def gestion_productos(request):
+    productos = Producto.objects.select_related('categoria').order_by('categoria__nombre', 'nombre')
+    return render(request, 'catalogo/gestion.html', {'productos': productos})
+
+
 @login_required
 @user_passes_test(es_personal, login_url='core:acceso_denegado')
 def crear_producto(request):
@@ -70,3 +81,36 @@ def crear_producto(request):
     else:
         form = ProductoForm()
     return render(request, 'catalogo/form.html', {'form': form, 'titulo': 'Nuevo producto'})
+
+
+@login_required
+@user_passes_test(es_personal, login_url='core:acceso_denegado')
+def editar_producto(request, slug):
+    producto = get_object_or_404(Producto, slug=slug)
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, request.FILES, instance=producto)
+        if form.is_valid():
+            producto = form.save()
+            messages.success(request, f'Producto "{producto.nombre}" actualizado correctamente.')
+            return redirect('catalogo:gestion')
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request, 'catalogo/form.html', {
+        'form': form,
+        'titulo': f'Editar: {producto.nombre}',
+    })
+
+
+@login_required
+@user_passes_test(es_personal, login_url='core:acceso_denegado')
+def eliminar_producto(request, slug):
+    producto = get_object_or_404(Producto, slug=slug, activo=True)
+    if request.method == 'POST':
+        producto.activo = False
+        producto.save(update_fields=['activo'])
+        messages.success(
+            request,
+            f'El producto "{producto.nombre}" fue desactivado y ya no aparece en el catálogo.',
+        )
+        return redirect('catalogo:gestion')
+    return render(request, 'catalogo/confirmar_eliminar.html', {'producto': producto})

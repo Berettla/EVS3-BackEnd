@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Desactivar producto - Banqueteria Judani{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card p-4 text-center">
+            <h2 style="font-family: 'Dancing Script', cursive; color: #D9467A; font-size: 2.4rem;">¿Desactivar este producto?</h2>
+            <p class="mb-1">Estás a punto de desactivar:</p>
+            <p class="fs-5 fw-bold mb-3">{{ producto.codigo }} - {{ producto.nombre }}</p>
+            <p class="text-muted">El producto dejará de mostrarse en el catálogo público, pero no se borra: podrás reactivarlo editándolo.</p>
+
+            <form method="post" class="d-flex gap-2 justify-content-center mt-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sí, desactivar</button>
+                <a href="{% url 'catalogo:gestion' %}" class="btn btn-outline-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
